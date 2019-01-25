@@ -1,0 +1,42 @@
+name: DeathBan
+version: 1.0.1
+api-version: 1.13
+author: Okx
+main: sh.okx.deathban.DeathBan
+description: Temporarily ban players on their death.
+
+commands:
+  lives:
+    description: View your lives left.
+    permission: deathban.command.lives
+  revive:
+    description: Transfer one of your lives to another player.
+    usage: /<command> <player>
+    permission: deathban.command.revive
+  deathban:
+    description: DeathBan admin command
+    permission: deathban.command.info
+
+permissions:
+  deathban.*:
+    default: false
+    children:
+    - deathban.bypass
+    - deathban.command.*
+  deathban.bypass:
+    default: false
+  deathban.command.*:
+    default: op
+    children:
+    - deathban.command.lives
+    - deathban.command.revive
+    - deathban.command.info
+    - deathban.command.admin
+  deathban.command.lives:
+    default: true
+  deathban.command.revive:
+    default: true
+  deathban.command.info:
+    default: true
+  deathban.command.admin:
+    default: op
