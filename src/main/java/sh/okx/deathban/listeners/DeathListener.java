@@ -19,6 +19,8 @@ public class DeathListener implements Listener {
       return;
     }
 
+    player.getInventory().clear();
+
     PlayerData data = plugin.getDatabase().getData(player.getUniqueId());
     data.setDeaths(data.getDeaths() + 1);
     plugin.checkBan(data);

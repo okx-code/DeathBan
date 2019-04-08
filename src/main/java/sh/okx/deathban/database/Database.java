@@ -5,6 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.scheduler.BukkitTask;
 import sh.okx.deathban.DeathBan;
 import sh.okx.timeapi.TimeAPI;
 
@@ -30,6 +31,7 @@ public class Database {
 
   private final LoadingCache<UUID, PlayerData> data;
   private final Queue<PlayerData> saveQueue = new LinkedBlockingQueue<>();
+  private final BukkitTask flushTask;
 
   private Connection connection;
 
@@ -71,7 +73,7 @@ public class Database {
     connection.createStatement().executeUpdate(CREATE_PLAYERS);
 
     long interval = new TimeAPI(config.getString("flush-interval")).getSeconds() * 20;
-    plugin.getServer().getScheduler().runTaskTimer(plugin, this::flush, interval, interval);
+    flushTask = plugin.getServer().getScheduler().runTaskTimer(plugin, this::flush, interval, interval);
   }
 
   public PlayerData getData(UUID uuid) {
@@ -86,6 +88,7 @@ public class Database {
   @SneakyThrows(SQLException.class)
   public synchronized void close() {
     flush();
+    flushTask.cancel();
     connection.close();
   }
 

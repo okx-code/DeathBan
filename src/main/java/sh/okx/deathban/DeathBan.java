@@ -80,7 +80,7 @@ public class DeathBan extends JavaPlugin {
       return false;
     }
 
-    ban(player, group.getTime(data.getBans()));
+    Bukkit.getScheduler().runTask(this, () -> ban(player, group.getTime(data.getBans())));
     return true;
   }
 
