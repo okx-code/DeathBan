@@ -88,6 +88,7 @@ default:
 
 # if a player has permission for multiple groups,
 # the one with the highest priority will be used.
+# groups also support commands
 groups:
 #  donator:
 #    permission: deathban.group.donator

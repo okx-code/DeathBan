@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -47,6 +48,10 @@ public class DeathBan extends JavaPlugin {
     Metrics metrics = new Metrics(this);
     metrics.addCustomChart(new Metrics.SimplePie("time_format",
         () -> getConfig().getString("time-format").split(" ")[0]));
+
+    if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+      new DeathBanExpansion(this).register();
+    }
   }
 
   public void reload() {
@@ -56,13 +61,13 @@ public class DeathBan extends JavaPlugin {
 
     timeFormat = getTime();
     database = new Database(this);
-    defaultGroup = Group.deserialize(getConfig().getConfigurationSection("default"));
+    defaultGroup = Group.deserialize(Objects.requireNonNull(getConfig().getConfigurationSection("default"), "The default group must exist"));
 
     groups = new TreeSet<>();
     ConfigurationSection sections = getConfig().getConfigurationSection("groups");
     if (sections != null) {
       for (String key : sections.getKeys(false)) {
-        ConfigurationSection section = sections.getConfigurationSection(key);
+        ConfigurationSection section = Objects.requireNonNull(sections.getConfigurationSection(key));
         groups.add(Group.deserialize(section));
       }
     }
@@ -116,7 +121,9 @@ public class DeathBan extends JavaPlugin {
   }
 
   public String getMessage(String path) {
-    return ChatColor.translateAlternateColorCodes('&', getConfig().getString("messages." + path));
+    String message = Objects.requireNonNull(getConfig().getString("messages." + path),
+        "Message " + path + " not found in config");
+    return ChatColor.translateAlternateColorCodes('&', message);
   }
 
   private TimeFormat getTime() {
