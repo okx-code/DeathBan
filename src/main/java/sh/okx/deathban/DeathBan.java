@@ -14,17 +14,14 @@ import sh.okx.deathban.database.Database;
 import sh.okx.deathban.database.PlayerData;
 import sh.okx.deathban.listeners.DeathListener;
 import sh.okx.deathban.listeners.JoinListener;
-import sh.okx.deathban.timeformat.DateTimeFormat;
-import sh.okx.deathban.timeformat.InTimeFormat;
 import sh.okx.deathban.timeformat.TimeFormat;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import sh.okx.deathban.timeformat.TimeFormatFactory;
 
 public class DeathBan extends JavaPlugin {
   @Getter
@@ -59,7 +56,7 @@ public class DeathBan extends JavaPlugin {
       database.close();
     }
 
-    timeFormat = getTime();
+    timeFormat = TimeFormatFactory.get(getConfig().getString("time-format"));
     database = new Database(this);
     defaultGroup = Group.deserialize(Objects.requireNonNull(getConfig().getConfigurationSection("default"), "The default group must exist"));
 
@@ -126,63 +123,8 @@ public class DeathBan extends JavaPlugin {
     return ChatColor.translateAlternateColorCodes('&', message);
   }
 
-  private TimeFormat getTime() {
-    String timeFormat = getConfig().getString("time-format");
-    String[] parts = timeFormat.split(" ");
-    if (parts.length < 2) {
-      throw new RuntimeException("Time format must have a space");
-    }
-    if (parts[0].equalsIgnoreCase("in")) {
-      int type;
-      try {
-        type = Integer.parseInt(parts[1]);
-        if (type < 1 || type > 7) {
-          throw new RuntimeException("in <number> number must be between 1 and 7");
-        }
-      } catch (NumberFormatException e) {
-        throw new RuntimeException(parts[1] + " is an invalid number in '" + timeFormat + "'");
-      }
-
-      return new InTimeFormat(type, timeFormat.split(" ", 3)[2]);
-    } else if (parts[0].equalsIgnoreCase("date-format")) {
-      if (parts.length < 3) {
-        throw new RuntimeException("date-format must have SHORT/MEDIUM/LONG/FULL SHORT/MEDIUM/LONG/FULL");
-      }
-      int i = toLength(parts[1]);
-      int i1 = toLength(parts[2]);
-
-      return new DateTimeFormat(DateFormat.getDateTimeInstance(i, i1));
-    } else if (parts[0].equalsIgnoreCase("custom-date-format")) {
-      SimpleDateFormat format;
-      try {
-        format = new SimpleDateFormat(timeFormat.split(" ", 2)[1]);
-      } catch (IllegalArgumentException e) {
-        throw new RuntimeException("Could not parse custom-date-format: " + e.getMessage());
-      }
-
-      return new DateTimeFormat(format);
-    } else {
-      throw new RuntimeException("Time format must start with: in, date-format or custom-date-format");
-    }
-  }
-
-  private int toLength(String string) {
-    switch (string.toUpperCase()) {
-      case "SHORT":
-        return DateFormat.SHORT;
-      case "MEDIUM":
-        return DateFormat.MEDIUM;
-      case "LONG":
-        return DateFormat.LONG;
-      case "FULL":
-        return DateFormat.FULL;
-      default:
-        throw new RuntimeException("'" + string + "' is not SHORT, MEDIUM, LONG or FULL.");
-    }
-  }
-
   public Group getGroup(OfflinePlayer player) {
-    if (!(player instanceof Player)) {
+    if (!(player instanceof Player) || !player.isOnline()) {
       return defaultGroup;
     }
     Player p = (Player) player;

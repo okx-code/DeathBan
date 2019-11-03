@@ -38,4 +38,9 @@ public class DeathBanExpansion extends PlaceholderExpansion {
   public String getVersion() {
     return plugin.getDescription().getVersion();
   }
+
+  @Override
+  public boolean persist() {
+    return true;
+  }
 }
