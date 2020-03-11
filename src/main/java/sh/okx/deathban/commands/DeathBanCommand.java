@@ -38,10 +38,10 @@ public class DeathBanCommand implements TabExecutor {
         return true;
       }
 
-      PlayerData data = plugin.getDatabase().getData(player.getUniqueId());
+      PlayerData data = plugin.getSDatabase().getData(player.getUniqueId());
       data.setDeaths(0);
       data.setBan(null);
-      plugin.getDatabase().save(data);
+      plugin.getSDatabase().save(data);
 
       sender.sendMessage(ChatColor.GREEN + player.getName() + " has been reset.");
       return true;
@@ -63,10 +63,10 @@ public class DeathBanCommand implements TabExecutor {
         return true;
       }
 
-      PlayerData data = plugin.getDatabase().getData(player.getUniqueId());
+      PlayerData data = plugin.getSDatabase().getData(player.getUniqueId());
       int maxLives = plugin.getGroup(player).getLives();
       data.setDeaths(maxLives - lives);
-      plugin.getDatabase().save(data);
+      plugin.getSDatabase().save(data);
 
       sender.sendMessage(ChatColor.GREEN + player.getName() + " now has " + lives + " lives.");
       return true;
@@ -88,9 +88,9 @@ public class DeathBanCommand implements TabExecutor {
         return true;
       }
 
-      PlayerData data = plugin.getDatabase().getData(player.getUniqueId());
+      PlayerData data = plugin.getSDatabase().getData(player.getUniqueId());
       data.setDeaths(data.getDeaths() - add);
-      plugin.getDatabase().save(data);
+      plugin.getSDatabase().save(data);
 
       sender.sendMessage(ChatColor.GREEN + player.getName() + " now has "
           + (plugin.getGroup(player).getLives() - data.getDeaths()) + " lives.");

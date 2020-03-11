@@ -1,4 +1,3 @@
-
 # options:
 # date-format SHORT/MEDIUM/LONG/FULL SHORT/MEDIUM/LONG/FULL
 # date/time formats are any of short/medium/long/full, twice, separated by a space
@@ -63,13 +62,14 @@ messages:
 # set to 0 to disable confirming
 revive-confirm: 10
 
+# how many lives people should have when they are banned and then revived
+# all - they have their maximum amount of lives
+# 1, 2, 3 (any positive number) - they will have exactly this amount of lives
+# -1, -2, -3 (any negative number) - they will have this fewer lives than the maximum (if the max lives is 10, and you set this to -4, they will have 6 lives when revived).
+revive-lives: all
+
 database:
-  cache:
-    # how many players the player cache can hold
-    size: 100
-    # how long cache data takes to expire
-    expire-after-access: 1h 30m
-  # interval to flush changes to the database
+  # interval to save changes to the database file
   flush-interval: 30s
 
 default:

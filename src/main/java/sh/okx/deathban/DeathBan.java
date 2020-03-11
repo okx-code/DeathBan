@@ -1,6 +1,5 @@
 package sh.okx.deathban;
 
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -15,25 +14,28 @@ import sh.okx.deathban.database.PlayerData;
 import sh.okx.deathban.listeners.DeathListener;
 import sh.okx.deathban.listeners.JoinListener;
 import sh.okx.deathban.timeformat.TimeFormat;
+import sh.okx.deathban.timeformat.TimeFormatFactory;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import sh.okx.deathban.timeformat.TimeFormatFactory;
 
 public class DeathBan extends JavaPlugin {
-  @Getter
   private Database database;
   private Group defaultGroup;
   private Set<Group> groups;
   private TimeFormat timeFormat;
 
+  public Database getSDatabase() {
+    return database;
+  }
+
   @Override
   public void onEnable() {
     saveDefaultConfig();
-    reload();
+    init();
 
     getServer().getPluginManager().registerEvents(new DeathListener(this), this);
     getServer().getPluginManager().registerEvents(new JoinListener(this), this);
@@ -42,7 +44,7 @@ public class DeathBan extends JavaPlugin {
     getCommand("revive").setExecutor(new ReviveCommand(this));
     getCommand("deathban").setExecutor(new DeathBanCommand(this));
 
-    Metrics metrics = new Metrics(this);
+    Metrics metrics = new Metrics(this, 3947);
     metrics.addCustomChart(new Metrics.SimplePie("time_format",
         () -> getConfig().getString("time-format").split(" ")[0]));
 
@@ -52,10 +54,12 @@ public class DeathBan extends JavaPlugin {
   }
 
   public void reload() {
-    if (database != null) {
-      database.close();
-    }
+    closeDatabase();
+    reloadConfig();
+    init();
+  }
 
+  private void init() {
     timeFormat = TimeFormatFactory.get(getConfig().getString("time-format"));
     database = new Database(this);
     defaultGroup = Group.deserialize(Objects.requireNonNull(getConfig().getConfigurationSection("default"), "The default group must exist"));
@@ -72,7 +76,13 @@ public class DeathBan extends JavaPlugin {
 
   @Override
   public void onDisable() {
-    database.close();
+    closeDatabase();
+  }
+
+  private void closeDatabase() {
+    if (database != null) {
+      database.close();
+    }
   }
 
   public boolean checkBan(PlayerData data) {

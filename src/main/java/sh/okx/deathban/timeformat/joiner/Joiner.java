@@ -1,33 +1,28 @@
-package sh.okx.deathban.timeformat;
+package sh.okx.deathban.timeformat.joiner;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 public class Joiner {
   private final String on;
-  private String finalJoin;
+  private final String finalJoin;
 
-  public static Joiner on(String on) {
-    return new Joiner(on);
-  }
-
-  private Joiner(String on) {
+  Joiner(String on, String finalJoin) {
     this.on = on;
-  }
-
-  public Joiner and() {
-    return finalJoinString(" and ");
-  }
-
-  public Joiner finalJoinString(String finalJoin) {
     this.finalJoin = finalJoin;
-    return this;
+  }
+
+  Joiner(String on) {
+    this(on, null);
   }
 
   public String join(Iterable<String> strings) {
+    Objects.requireNonNull(strings);
     return join(strings.iterator());
   }
 
   public String join(Iterator<String> strings) {
+    Objects.requireNonNull(strings);
     if (!strings.hasNext()) {
       return "";
     }

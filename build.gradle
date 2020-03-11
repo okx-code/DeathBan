@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'sh.okx'
-version '1.0.5'
+version '1.1-rc.1'
 
 repositories {
     mavenCentral()
@@ -19,6 +19,6 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
+    compile 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
     compile 'me.clip:placeholderapi:2.9.2'
 }

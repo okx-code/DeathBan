@@ -15,4 +15,5 @@ public class PlayerData {
   private Timestamp ban;
   private int deaths = 0;
   private int bans = 0;
+  private boolean revived;
 }

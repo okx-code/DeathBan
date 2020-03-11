@@ -35,8 +35,8 @@ public class ReviveCommand implements CommandExecutor {
       return true;
     }
 
-    PlayerData data = plugin.getDatabase().getData(player.getUniqueId());
-    PlayerData reviveData = plugin.getDatabase().getData(revive.getUniqueId());
+    PlayerData data = plugin.getSDatabase().getData(player.getUniqueId());
+    PlayerData reviveData = plugin.getSDatabase().getData(revive.getUniqueId());
 
     int confirm = plugin.getConfig().getInt("revive-confirm");
     if (reviveData.getBan() == null && reviveData.getDeaths() == 0) {
@@ -51,9 +51,10 @@ public class ReviveCommand implements CommandExecutor {
     }
 
     data.setDeaths(data.getDeaths() + 1);
-    plugin.getDatabase().save(data);
+    plugin.getSDatabase().save(data);
     if (reviveData.getBan() != null) {
       reviveData.setBan(null);
+      reviveData.setRevived(true);
       send(player, plugin.getMessage("revive.revived"), revive);
     } else {
       reviveData.setDeaths(reviveData.getDeaths() - 1);
@@ -61,14 +62,14 @@ public class ReviveCommand implements CommandExecutor {
     }
 
     plugin.checkBan(data);
-    plugin.getDatabase().save(reviveData);
+    plugin.getSDatabase().save(reviveData);
     return true;
   }
 
   private void send(Player player, String message, OfflinePlayer revive) {
     Group group = plugin.getGroup(player);
-    PlayerData reviveData = plugin.getDatabase().getData(revive.getUniqueId());
-    PlayerData data = plugin.getDatabase().getData(player.getUniqueId());
+    PlayerData reviveData = plugin.getSDatabase().getData(revive.getUniqueId());
+    PlayerData data = plugin.getSDatabase().getData(player.getUniqueId());
     player.sendMessage(message
         .replace("%lives%", group.getLives() - data.getDeaths() + "")
         .replace("%deaths%", data.getDeaths() + "")
