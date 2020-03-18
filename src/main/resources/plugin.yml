@@ -1,5 +1,5 @@
 name: DeathBan
-version: '1.1-rc.1'
+version: '1.1'
 api-version: '1.13'
 author: Okx
 main: sh.okx.deathban.DeathBan
