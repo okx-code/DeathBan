@@ -21,6 +21,9 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import sh.okx.deathban.update.JoinUpdateNotifier;
+import sh.okx.deathban.update.UpdateNotifier;
+import sh.okx.deathban.update.VersionChecker;
 
 public class DeathBan extends JavaPlugin {
   private Database database;
@@ -34,11 +37,14 @@ public class DeathBan extends JavaPlugin {
 
   @Override
   public void onEnable() {
+    UpdateNotifier notifier = new UpdateNotifier(new VersionChecker(this));
+
     saveDefaultConfig();
     init();
 
     getServer().getPluginManager().registerEvents(new DeathListener(this), this);
     getServer().getPluginManager().registerEvents(new JoinListener(this), this);
+    getServer().getPluginManager().registerEvents(new JoinUpdateNotifier(notifier, () -> getConfig().getBoolean("notify-update"), "deathban.notify"), this);
 
     getCommand("lives").setExecutor(new LivesCommand(this));
     getCommand("revive").setExecutor(new ReviveCommand(this));
@@ -72,6 +78,7 @@ public class DeathBan extends JavaPlugin {
         groups.add(Group.deserialize(section));
       }
     }
+
   }
 
   @Override

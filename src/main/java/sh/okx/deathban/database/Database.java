@@ -96,7 +96,7 @@ public class Database {
     // version 0 - base
     // version 1 - added "revive" field
 
-    if (getUserVersion() == 0 && false) {
+    if (getUserVersion() == 0) {
       // add revive field
       connection.createStatement()
           .executeUpdate("ALTER TABLE players ADD COLUMN revived INT DEFAULT 0");

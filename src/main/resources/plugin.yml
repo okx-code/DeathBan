@@ -4,6 +4,7 @@ api-version: '1.13'
 author: Okx
 main: sh.okx.deathban.DeathBan
 description: Temporarily ban players on their death.
+softdepend: [PlaceholderAPI]
 
 commands:
   lives:

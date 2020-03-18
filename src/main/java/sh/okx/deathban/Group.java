@@ -34,7 +34,8 @@ public class Group implements Comparable<Group> {
 
   @Override
   public int compareTo(Group group) {
-    return Integer.compare(priority, group.getPriority());
+    // high priority should be first
+    return Integer.compare(group.getPriority(), priority);
   }
 
   public long getTime(int bans) {

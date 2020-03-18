@@ -68,6 +68,10 @@ revive-confirm: 10
 # -1, -2, -3 (any negative number) - they will have this fewer lives than the maximum (if the max lives is 10, and you set this to -4, they will have 6 lives when revived).
 revive-lives: all
 
+# if true, players with the permission deathban.notify will receive notifications when they join
+# to update if the server is on an older version of DeathBan.
+notify-update: true
+
 database:
   # interval to save changes to the database file
   flush-interval: 30s
