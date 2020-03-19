@@ -44,7 +44,7 @@ public class DeathBan extends JavaPlugin {
 
     getServer().getPluginManager().registerEvents(new DeathListener(this), this);
     getServer().getPluginManager().registerEvents(new JoinListener(this), this);
-    getServer().getPluginManager().registerEvents(new JoinUpdateNotifier(notifier, () -> getConfig().getBoolean("notify-update"), "deathban.notify"), this);
+    getServer().getPluginManager().registerEvents(new JoinUpdateNotifier(notifier, () -> getConfig().getBoolean("notify-update", true), "deathban.notify"), this);
 
     getCommand("lives").setExecutor(new LivesCommand(this));
     getCommand("revive").setExecutor(new ReviveCommand(this));

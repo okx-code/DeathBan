@@ -41,7 +41,7 @@ public class JoinListener implements Listener {
       data.setRevived(false);
 
       Group group = plugin.getGroup(player);
-      String reviveLivesString = plugin.getConfig().getString("revive-lives");
+      String reviveLivesString = plugin.getConfig().getString("revive-lives", "all");
       if (!reviveLivesString.equalsIgnoreCase("all")) {
         try {
           int reviveLives = Integer.parseInt(reviveLivesString);
