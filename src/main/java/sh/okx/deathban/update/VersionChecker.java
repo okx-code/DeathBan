@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 public class VersionChecker {
-  public static final int RESOURCE_ID = 17933;
+  public static final int RESOURCE_ID = 64283;
 
   private final Plugin plugin;
   private final String currentVersion;
