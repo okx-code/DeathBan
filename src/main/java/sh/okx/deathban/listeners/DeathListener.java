@@ -19,7 +19,10 @@ public class DeathListener implements Listener {
     Player player = e.getEntity();
     PlayerData data = plugin.getSDatabase().getData(player.getUniqueId());
     data.setDeaths(data.getDeaths() + 1);
-    if(!plugin.checkBan(data)) return;
+    if(!plugin.checkBan(data)) {
+      plugin.getSDatabase().save(data);
+      return;
+    }
 
     PlayerDeathBanEvent event = new PlayerDeathBanEvent(player,
             data,
@@ -31,6 +34,7 @@ public class DeathListener implements Listener {
     //Revert death addition if event was cancelled
     if(event.isCancelled()){
       data.setDeaths(data.getDeaths() - 1);
+      plugin.getSDatabase().save(data);
       return;
     }
 

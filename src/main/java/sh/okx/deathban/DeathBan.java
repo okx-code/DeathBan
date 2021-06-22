@@ -6,6 +6,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import sh.okx.deathban.commands.DeathBanCommand;
 import sh.okx.deathban.commands.LivesCommand;
 import sh.okx.deathban.commands.ReviveCommand;
@@ -52,7 +53,7 @@ public class DeathBan extends JavaPlugin {
 
     Metrics metrics = new Metrics(this, 3947);
     metrics.addCustomChart(new Metrics.SimplePie("time_format",
-        () -> getConfig().getString("time-format").split(" ")[0]));
+            () -> getConfig().getString("time-format").split(" ")[0]));
 
     if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
       new DeathBanExpansion(this).register();
@@ -99,39 +100,44 @@ public class DeathBan extends JavaPlugin {
   }
 
   public void ban(Player player, long time) {
-    Group group = getGroup(player);
-    PlayerData data = database.getData(player.getUniqueId());
+    new BukkitRunnable() {
+      final Group group = getGroup(player);
+      final PlayerData data = database.getData(player.getUniqueId());
 
-    data.setDeaths(0);
-    Timestamp ban = new Timestamp(System.currentTimeMillis() + time);
-    data.setBan(ban);
-    data.setBans(data.getBans() + 1);
+      public void run() {
+        data.setDeaths(0);
+        Timestamp ban = new Timestamp(System.currentTimeMillis() + time);
+        data.setBan(ban);
+        data.setBans(data.getBans() + 1);
 
-    for (String command : group.getCommands()) {
-      Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replaceStats(command, player));
-    }
-    player.kickPlayer(replaceStats(getDateMessage(ban, "kick"), player));
+        for (String command : group.getCommands()) {
+          Bukkit.dispatchCommand(Bukkit.getConsoleSender(), replaceStats(command, player));
+        }
+        player.kickPlayer(replaceStats(getDateMessage(ban, "kick"), player));
+      }
+
+    }.runTaskLater(this, 1);
   }
 
   public String getDateMessage(Date date, String type) {
     return getMessage(type)
-        .replace("%time%", timeFormat.format(date));
+            .replace("%time%", timeFormat.format(date));
   }
 
   public String replaceStats(String string, Player player) {
     PlayerData data = database.getData(player.getUniqueId());
     Group group = getGroup(player);
     return ChatColor.translateAlternateColorCodes('&', string)
-        .replace("%player%", player.getName())
-        .replace("%lives%", group.getLives() - data.getDeaths() + "")
-        .replace("%maxlives%", group.getLives() + "")
-        .replace("%deaths%", data.getDeaths() + "")
-        .replace("%bans%", data.getBans() + "");
+            .replace("%player%", player.getName())
+            .replace("%lives%", group.getLives() - data.getDeaths() + "")
+            .replace("%maxlives%", group.getLives() + "")
+            .replace("%deaths%", data.getDeaths() + "")
+            .replace("%bans%", data.getBans() + "");
   }
 
   public String getMessage(String path) {
     String message = Objects.requireNonNull(getConfig().getString("messages." + path),
-        "Message " + path + " not found in config");
+            "Message " + path + " not found in config");
     return ChatColor.translateAlternateColorCodes('&', message);
   }
 
