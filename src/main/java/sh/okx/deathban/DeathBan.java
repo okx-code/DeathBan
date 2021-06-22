@@ -95,12 +95,7 @@ public class DeathBan extends JavaPlugin {
   public boolean checkBan(PlayerData data) {
     Player player = Bukkit.getPlayer(data.getUuid());
     Group group = getGroup(player);
-    if (data.getDeaths() < group.getLives()) {
-      return false;
-    }
-
-    Bukkit.getScheduler().runTask(this, () -> ban(player, group.getTime(data.getBans())));
-    return true;
+    return data.getDeaths() >= group.getLives();
   }
 
   public void ban(Player player, long time) {

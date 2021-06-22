@@ -61,7 +61,9 @@ public class ReviveCommand implements CommandExecutor {
       send(player, plugin.getMessage("revive.transferred"), revive);
     }
 
-    plugin.checkBan(data);
+    if(plugin.checkBan(data)){
+      plugin.ban(player, plugin.getGroup(player).getTime());
+    }
     plugin.getSDatabase().save(reviveData);
     return true;
   }
