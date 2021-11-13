@@ -21,6 +21,10 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import sh.okx.deathban.update.JoinUpdateNotifier;
 import sh.okx.deathban.update.UpdateNotifier;
 import sh.okx.deathban.update.VersionChecker;
@@ -30,6 +34,7 @@ public class DeathBan extends JavaPlugin {
   private Group defaultGroup;
   private Set<Group> groups;
   private TimeFormat timeFormat;
+  private ExecutorService deathExecutor = Executors.newSingleThreadExecutor();
 
   public Database getSDatabase() {
     return database;
@@ -83,6 +88,7 @@ public class DeathBan extends JavaPlugin {
 
   @Override
   public void onDisable() {
+    deathExecutor.shutdownNow().forEach(Runnable::run); // shutdown, run remaining tasks before we close the db
     closeDatabase();
   }
 
@@ -151,5 +157,9 @@ public class DeathBan extends JavaPlugin {
       }
     }
     return defaultGroup;
+  }
+
+  public Executor getDeathExecutor() {
+    return deathExecutor;
   }
 }

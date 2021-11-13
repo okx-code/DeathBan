@@ -3,8 +3,11 @@ package sh.okx.deathban.listeners;
 import java.sql.Timestamp;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -32,9 +35,9 @@ public class JoinListener implements Listener {
         plugin.getDateMessage(ban, "ban"));
   }
 
-  @EventHandler
-  public void on(PlayerLoginEvent e) {
-    Player player = e.getPlayer();
+  @EventHandler(priority = EventPriority.HIGH)
+  public void onPreJoinTwo(AsyncPlayerPreLoginEvent e) {
+    final OfflinePlayer player = Bukkit.getOfflinePlayer(e.getUniqueId());
     PlayerData data = plugin.getSDatabase().getData(player.getUniqueId());
 
     if (data.isRevived()) {
