@@ -1,10 +1,11 @@
 package sh.okx.deathban.timeformat;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InTimeFormatTest {
 
