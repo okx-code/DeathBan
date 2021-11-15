@@ -21,9 +21,8 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import sh.okx.deathban.update.JoinUpdateNotifier;
 import sh.okx.deathban.update.UpdateNotifier;
@@ -34,7 +33,7 @@ public class DeathBan extends JavaPlugin {
   private Group defaultGroup;
   private Set<Group> groups;
   private TimeFormat timeFormat;
-  private ExecutorService deathExecutor = Executors.newSingleThreadExecutor();
+  private ScheduledExecutorService deathExecutor = Executors.newSingleThreadScheduledExecutor();
 
   public Database getSDatabase() {
     return database;
@@ -83,7 +82,6 @@ public class DeathBan extends JavaPlugin {
         groups.add(Group.deserialize(section));
       }
     }
-
   }
 
   @Override
@@ -159,7 +157,7 @@ public class DeathBan extends JavaPlugin {
     return defaultGroup;
   }
 
-  public Executor getDeathExecutor() {
+  public ScheduledExecutorService getDeathExecutor() {
     return deathExecutor;
   }
 }
